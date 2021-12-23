@@ -1,0 +1,11 @@
+.stack-work/
+Aoc2021.cabal 
+ChangeLog.md
+LICENSE
+package.yaml
+Setup.hs 
+src
+stack.yaml
+stack.yaml.lock
+*.swp
+*~
