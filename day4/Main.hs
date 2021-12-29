@@ -32,12 +32,19 @@ checkBingoAll boards =
         []    ->  (False, (head boards))
         (h:t)  ->  if (checkBingoBoard h) then (True, h) else (checkBingoAll t)
 
-playBingo boards nums = 
+_playBingo boards nums = 
   case  nums of
         []    ->  (head boards,(-1))
         (h:t) ->  let b = map (\r -> markNums r h) boards in
                   let (bingo,winner) = checkBingoAll b in
-                  if bingo then (winner, h) else playBingo b t
+                  if bingo then (winner, h) else _playBingo b t
+
+playBingo boards nums = 
+  if (length boards) == 1 then (boards, nums) else
+  let b = map (\r -> markNums r (head nums)) boards in
+  let res = filter (\i -> (not (checkBingoBoard i))) b in
+  playBingo res (tail nums)
+
 
 sumBoard winner = foldr (+) 0 (map (sum) winner)
 
@@ -49,7 +56,9 @@ main =
     let nums = splitRead "," (head lst)
     let input = filter (\i -> i /= "") (tail lst)
     let boards = genBoards input
-    let (winner, num) = playBingo boards nums
+    --let (winner, num) = playBingo boards nums
+    let (loser, _nums) = playBingo boards nums
+    let (winner, num) = _playBingo loser _nums
     putStrLn (show $ (sumBoard (map (filter (\i -> i /= -1)) winner)) * num)
 
 
